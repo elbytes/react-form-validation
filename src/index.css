@@ -27,3 +27,8 @@ h1 {
 .control-label {
   text-align: left;
 }
+
+.results {
+  text-align: left;
+  margin-top: 5rem;
+}

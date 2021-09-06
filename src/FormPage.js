@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Form, Row, Col, Button } from 'react-bootstrap'
+import validateInput from './validateInput'
 
 const FormPage = () => {
   const [sampleSize, setSampleSize] = useState('')
@@ -8,7 +9,11 @@ const FormPage = () => {
   const [hypothesizedTestCheck, setHypothesizedTestCheck] = useState(false)
   const [hypothesizedMean, setHypothesizedMean] = useState('')
   const [hypothesizedMeanLabel, setHypothesizedMeanLabel] = useState('')
-  const submitHandler = () => {}
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    console.log('submitting')
+  }
   const resetHandler = () => {}
 
   return (
@@ -74,18 +79,26 @@ const FormPage = () => {
           </Col>
         </Form.Group>
         <div className='x-0'>
-          <Button variant='primary' className='btn btn-primary px-5'>
+          <Button
+            variant='primary'
+            className='btn btn-primary px-5'
+            onClick={submitHandler}
+          >
             OK
           </Button>
-          <Button
-            variant='secondary'
-            className='px-5 mx-2'
-            onClick={() => resetHandler}
-          >
+          <Button variant='secondary' className='px-5 mx-2'>
             Reset
           </Button>
         </div>
       </Form>
+      <div className='results'>
+        <h3>Results</h3>
+        <p>Sample size: {sampleSize}</p>
+        <p>Sample mean: {sampleMean}</p>
+        <p>Standard deviation: {standardDeviation}</p>
+        <p>Perform hypothesis test: {hypothesizedTestCheck}</p>
+        <p>Hypothesized Mean: {hypothesizedMean} </p>
+      </div>
     </Container>
   )
 }
