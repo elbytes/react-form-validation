@@ -13,6 +13,7 @@ const validateInput = (values) => {
   } else if (isNaN(values.sampleSize)) {
     errors.sampleSize = 'Sample size must be a number'
   } else if (parseInt(values.sampleSize) % 1 !== 0) {
+    ///ISSUE!!!
     errors.sampleSize = 'Sample size must be a whole number'
   } else if (parseInt(values.sampleSize) < 2) {
     errors.sampleSize = 'Sample size must be equal or greater than 2'

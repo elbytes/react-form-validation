@@ -9,12 +9,43 @@ const FormPage = () => {
   const [hypothesizedTestCheck, setHypothesizedTestCheck] = useState(false)
   const [hypothesizedMean, setHypothesizedMean] = useState('')
   const [hypothesizedMeanLabel, setHypothesizedMeanLabel] = useState('')
-
-  const submitHandler = (e) => {
-    e.preventDefault()
-    console.log('submitting')
+  const [errors, setErrors] = useState({
+    sampleSize: '',
+    sampleMean: '',
+    standardDeviation: '',
+    hypothesizedTestCheck: '',
+    hypothesizedMean: '',
+  })
+  const values = {
+    sampleSize: sampleSize,
+    sampleMean: sampleMean,
+    standardDeviation: standardDeviation,
+    hypothesizedTestCheck: hypothesizedTestCheck,
+    hypothesizedMean: hypothesizedMean,
+    hypothesizedMeanLabel: hypothesizedMeanLabel,
   }
-  const resetHandler = () => {}
+
+  const submitHandler = async (e) => {
+    e.preventDefault()
+    console.log('Submitting form')
+    setErrors(validateInput(values))
+  }
+  const resetHandler = (e) => {
+    console.log('Resetting form')
+    e.preventDefault()
+    setSampleSize('')
+    setSampleMean('')
+    setStandardDeviation('')
+    setHypothesizedTestCheck(false)
+    setHypothesizedMean('')
+    setErrors({
+      sampleSize: '',
+      sampleMean: '',
+      standardDeviation: '',
+      hypothesizedTestCheck: '',
+      hypothesizedMean: '',
+    })
+  }
 
   return (
     <Container>
@@ -31,6 +62,9 @@ const FormPage = () => {
               onChange={(e) => setSampleSize(e.target.value)}
             ></Form.Control>
           </Col>
+          <Row>
+            <Col>{errors.sampleSize && <p>{errors.sampleSize}</p>}</Col>
+          </Row>
         </Form.Group>
         <Form.Group as={Row} className='mb-3' controlId='sampleMean'>
           <Form.Label column sm={2} className='control-label'>
@@ -43,6 +77,9 @@ const FormPage = () => {
               onChange={(e) => setSampleMean(e.target.value)}
             ></Form.Control>
           </Col>
+          <Row>
+            <Col>{errors.sampleMean && <p>{errors.sampleMean}</p>}</Col>
+          </Row>
         </Form.Group>
         <Form.Group as={Row} className='mb-3' controlId='standardDeviation'>
           <Form.Label column sm={2} className='control-label'>
@@ -55,6 +92,11 @@ const FormPage = () => {
               onChange={(e) => setStandardDeviation(e.target.value)}
             ></Form.Control>
           </Col>
+          <Row>
+            <Col>
+              {errors.standardDeviation && <p>{errors.standardDeviation}</p>}
+            </Col>
+          </Row>
         </Form.Group>
         <Form.Group as={Row} className='mb-3' controlId='formBasicCheckbox'>
           <Col lg={6}>
@@ -77,6 +119,11 @@ const FormPage = () => {
               onChange={(e) => setHypothesizedMean(e.target.value)}
             ></Form.Control>
           </Col>
+          <Row>
+            <Col>
+              {errors.hypothesizedMean && <p>{errors.hypothesizedMean}</p>}
+            </Col>
+          </Row>
         </Form.Group>
         <div className='x-0'>
           <Button
@@ -86,7 +133,11 @@ const FormPage = () => {
           >
             OK
           </Button>
-          <Button variant='secondary' className='px-5 mx-2'>
+          <Button
+            variant='secondary'
+            className='px-5 mx-2'
+            onClick={resetHandler}
+          >
             Reset
           </Button>
         </div>
