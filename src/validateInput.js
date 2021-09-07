@@ -3,7 +3,6 @@ const validateInput = (values) => {
     sampleSize: '',
     sampleMean: '',
     standardDeviation: '',
-    hypothesizedTestCheck: '',
     hypothesizedMean: '',
   }
 
@@ -12,10 +11,9 @@ const validateInput = (values) => {
     errors.sampleSize = 'Sample size required'
   } else if (isNaN(values.sampleSize)) {
     errors.sampleSize = 'Sample size must be a number'
-  } else if (parseInt(values.sampleSize) % 1 !== 0) {
-    ///ISSUE!!!
+  } else if (parseFloat(values.sampleSize) % 1 !== 0) {
     errors.sampleSize = 'Sample size must be a whole number'
-  } else if (parseInt(values.sampleSize) < 2) {
+  } else if (parseFloat(values.sampleSize) < 2) {
     errors.sampleSize = 'Sample size must be equal or greater than 2'
   }
 
@@ -46,7 +44,6 @@ const validateInput = (values) => {
   } else if (isNaN(values.hypothesizedMean)) {
     errors.hypothesizedMean = 'Hypothesized Mean must be a number'
   }
-
   return errors
 }
 

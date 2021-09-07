@@ -8,50 +8,77 @@ const FormPage = () => {
   const [standardDeviation, setStandardDeviation] = useState('')
   const [hypothesizedTestCheck, setHypothesizedTestCheck] = useState(false)
   const [hypothesizedMean, setHypothesizedMean] = useState('')
-  const [hypothesizedMeanLabel, setHypothesizedMeanLabel] = useState('')
-  const [errors, setErrors] = useState({
+  const [error, setError] = useState({
     sampleSize: '',
     sampleMean: '',
     standardDeviation: '',
-    hypothesizedTestCheck: '',
     hypothesizedMean: '',
   })
-  const values = {
-    sampleSize: sampleSize,
-    sampleMean: sampleMean,
-    standardDeviation: standardDeviation,
-    hypothesizedTestCheck: hypothesizedTestCheck,
-    hypothesizedMean: hypothesizedMean,
-    hypothesizedMeanLabel: hypothesizedMeanLabel,
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const styles = {
+    labelStyleDisabled: { color: 'lightgrey' },
+    labelStyleEnabled: { color: '#000' },
+    enableResults: { display: 'block' },
+    disableResults: { display: 'none' },
+    errorStyle: { color: 'red', margin: '1.5rem' },
   }
 
-  const submitHandler = async (e) => {
-    e.preventDefault()
-    console.log('Submitting form')
-    setErrors(validateInput(values))
+  const performHypothesisTest = (e) => {
+    setHypothesizedTestCheck(e.target.checked)
   }
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    console.log('Submitting')
+    const isValid = validateInput({
+      sampleSize: sampleSize,
+      sampleMean: sampleMean,
+      standardDeviation: standardDeviation,
+      hypothesizedTestCheck: hypothesizedTestCheck,
+      hypothesizedMean: hypothesizedMean,
+    })
+    setError((prevState) => {
+      return {
+        ...prevState,
+        sampleSize: isValid.sampleSize,
+        sampleMean: isValid.sampleMean,
+        standardDeviation: isValid.standardDeviation,
+        hypothesizedMean: isValid.hypothesizedMean,
+      }
+    })
+    if (
+      error.sampleSize === '' &&
+      error.sampleMean === '' &&
+      error.standardDeviation === '' &&
+      error.hypothesizedMean === ''
+    ) {
+      setSubmitSuccess(true)
+    }
+  }
+
   const resetHandler = (e) => {
-    console.log('Resetting form')
     e.preventDefault()
     setSampleSize('')
     setSampleMean('')
     setStandardDeviation('')
     setHypothesizedTestCheck(false)
     setHypothesizedMean('')
-    setErrors({
+    setError({
       sampleSize: '',
       sampleMean: '',
       standardDeviation: '',
-      hypothesizedTestCheck: '',
       hypothesizedMean: '',
     })
+    setSubmitSuccess(false)
+    console.log('Resetting form')
   }
 
   return (
     <Container>
       <h1>Test Assignments for Minitab - El</h1>
       <Form onSubmit={submitHandler}>
-        <Form.Group as={Row} className='mb-3' controlId='samleSize'>
+        <Form.Group as={Row} className='mb-3' controlId='sampleSize'>
           <Form.Label column lg={2} className='control-label'>
             Sample size:
           </Form.Label>
@@ -63,7 +90,9 @@ const FormPage = () => {
             ></Form.Control>
           </Col>
           <Row>
-            <Col>{errors.sampleSize && <p>{errors.sampleSize}</p>}</Col>
+            <Col>
+              <p style={styles.errorStyle}>{error.sampleSize}</p>
+            </Col>
           </Row>
         </Form.Group>
         <Form.Group as={Row} className='mb-3' controlId='sampleMean'>
@@ -78,7 +107,9 @@ const FormPage = () => {
             ></Form.Control>
           </Col>
           <Row>
-            <Col>{errors.sampleMean && <p>{errors.sampleMean}</p>}</Col>
+            <Col>
+              <p style={styles.errorStyle}>{error.sampleMean}</p>
+            </Col>
           </Row>
         </Form.Group>
         <Form.Group as={Row} className='mb-3' controlId='standardDeviation'>
@@ -94,7 +125,7 @@ const FormPage = () => {
           </Col>
           <Row>
             <Col>
-              {errors.standardDeviation && <p>{errors.standardDeviation}</p>}
+              <p style={styles.errorStyle}>{error.standardDeviation}</p>
             </Col>
           </Row>
         </Form.Group>
@@ -104,16 +135,27 @@ const FormPage = () => {
               type='checkbox'
               className='control-label'
               label='Perform hypothesis test'
+              checked={hypothesizedTestCheck}
+              onChange={(e) => performHypothesisTest(e)}
             />
           </Col>
         </Form.Group>
         <Form.Group as={Row} className='mb-3' controlId='hypothesizedMean'>
-          <Form.Label column sm={2} className='control-label'>
+          <Form.Label
+            column
+            sm={2}
+            className='control-label'
+            style={
+              hypothesizedTestCheck
+                ? styles.labelStyleEnabled
+                : styles.labelStyleDisabled
+            }
+          >
             Hypothesized Mean
           </Form.Label>
           <Col lg={6}>
             <Form.Control
-              disabled
+              disabled={!hypothesizedTestCheck}
               type='text'
               value={hypothesizedMean}
               onChange={(e) => setHypothesizedMean(e.target.value)}
@@ -121,7 +163,7 @@ const FormPage = () => {
           </Col>
           <Row>
             <Col>
-              {errors.hypothesizedMean && <p>{errors.hypothesizedMean}</p>}
+              <p style={styles.errorStyle}>{error.hypothesizedMean}</p>
             </Col>
           </Row>
         </Form.Group>
@@ -142,14 +184,18 @@ const FormPage = () => {
           </Button>
         </div>
       </Form>
-      <div className='results'>
-        <h3>Results</h3>
-        <p>Sample size: {sampleSize}</p>
-        <p>Sample mean: {sampleMean}</p>
-        <p>Standard deviation: {standardDeviation}</p>
-        <p>Perform hypothesis test: {hypothesizedTestCheck}</p>
-        <p>Hypothesized Mean: {hypothesizedMean} </p>
-      </div>
+      {submitSuccess ? (
+        <div className='results'>
+          <h3>Results</h3>
+          <p>Sample size: {sampleSize}</p>
+          <p>Sample mean: {sampleMean}</p>
+          <p>Standard deviation: {standardDeviation}</p>
+          <p>Perform hypothesis test: {hypothesizedTestCheck.toString()}</p>
+          {hypothesizedTestCheck && (
+            <p>Hypothesized Mean: {hypothesizedMean} </p>
+          )}
+        </div>
+      ) : null}
     </Container>
   )
 }
