@@ -1,6 +1,7 @@
 # React form validation for Minitab test assignment
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 The form uses [React Bootstrap](https://react-bootstrap.github.io/)
 ## Available Scripts
 
