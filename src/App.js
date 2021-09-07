@@ -1,4 +1,3 @@
-import './App.css'
 import FormPage from './FormPage'
 
 function App() {
