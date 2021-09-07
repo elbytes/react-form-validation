@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Container, Form, Row, Col, Button } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Container, Form, Row, Col, Button, Table } from 'react-bootstrap'
 import validateInput from './validateInput'
 
 const FormPage = () => {
@@ -13,8 +13,8 @@ const FormPage = () => {
     sampleMean: '',
     standardDeviation: '',
     hypothesizedMean: '',
+    submission: false,
   })
-  const [submitSuccess, setSubmitSuccess] = useState(false)
 
   const styles = {
     labelStyleDisabled: { color: 'lightgrey' },
@@ -45,16 +45,9 @@ const FormPage = () => {
         sampleMean: isValid.sampleMean,
         standardDeviation: isValid.standardDeviation,
         hypothesizedMean: isValid.hypothesizedMean,
+        submission: isValid.submission,
       }
     })
-    if (
-      error.sampleSize === '' &&
-      error.sampleMean === '' &&
-      error.standardDeviation === '' &&
-      error.hypothesizedMean === ''
-    ) {
-      setSubmitSuccess(true)
-    }
   }
 
   const resetHandler = (e) => {
@@ -64,13 +57,16 @@ const FormPage = () => {
     setStandardDeviation('')
     setHypothesizedTestCheck(false)
     setHypothesizedMean('')
-    setError({
-      sampleSize: '',
-      sampleMean: '',
-      standardDeviation: '',
-      hypothesizedMean: '',
+    setError((prevState) => {
+      return {
+        ...prevState,
+        sampleSize: '',
+        sampleMean: '',
+        standardDeviation: '',
+        hypothesizedMean: '',
+        submission: false,
+      }
     })
-    setSubmitSuccess(false)
     console.log('Resetting form')
   }
 
@@ -184,16 +180,35 @@ const FormPage = () => {
           </Button>
         </div>
       </Form>
-      {submitSuccess ? (
+      {error.submission ? (
         <div className='results'>
-          <h3>Results</h3>
-          <p>Sample size: {sampleSize}</p>
-          <p>Sample mean: {sampleMean}</p>
-          <p>Standard deviation: {standardDeviation}</p>
-          <p>Perform hypothesis test: {hypothesizedTestCheck.toString()}</p>
-          {hypothesizedTestCheck && (
-            <p>Hypothesized Mean: {hypothesizedMean} </p>
-          )}
+          <h4>Results</h4>
+          <Table striped bordered hover>
+            <tbody>
+              <tr>
+                <td>Sample size: </td>
+                <td>{sampleSize}</td>
+              </tr>
+              <tr>
+                <td>Sample mean: </td>
+                <td>{sampleMean}</td>
+              </tr>
+              <tr>
+                <td>Standard deviation: </td>
+                <td>{standardDeviation}</td>
+              </tr>
+              <tr>
+                <td>Perform hypothesis test: </td>
+                <td>{hypothesizedTestCheck.toString()}</td>
+              </tr>
+              {hypothesizedTestCheck && (
+                <tr>
+                  <td>Hypothesized Mean: </td>
+                  <td>{hypothesizedMean}</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
         </div>
       ) : null}
     </Container>

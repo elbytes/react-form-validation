@@ -4,6 +4,7 @@ const validateInput = (values) => {
     sampleMean: '',
     standardDeviation: '',
     hypothesizedMean: '',
+    submission: false,
   }
 
   //sample size validation
@@ -43,6 +44,15 @@ const validateInput = (values) => {
       'If perform hypothesis test is checked, Hypothesizd Mean is required'
   } else if (isNaN(values.hypothesizedMean)) {
     errors.hypothesizedMean = 'Hypothesized Mean must be a number'
+  }
+
+  if (
+    errors.sampleSize === '' &&
+    errors.sampleMean === '' &&
+    errors.standardDeviation === '' &&
+    errors.hypothesizedMean === ''
+  ) {
+    errors.submission = true
   }
   return errors
 }
